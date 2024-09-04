@@ -67,19 +67,23 @@ namespace SimpleXMLValidatorLibrary
         //Please implement this method
         public static bool DetermineXml(string xml)
         {
-            // string is non-empty, 
-            // length greater than 3 (to initialize loop), and 
-            // valid opening & closing tags
-            if (string.IsNullOrEmpty(xml) || xml.Length > 3 || xml[0] != '<' || xml[xml.Length - 1] != '>')
+            // Iterates over every char in the string, pushing opening tags to a stack and popping matching tags.
+            // Returns true if XML is valid, else false.
+
+            if (string.IsNullOrEmpty(xml) || xml.Length < 2 || xml[0] != '<' || xml[xml.Length - 1] != '>')
             {
+                // string is non-empty, 
+                // length is less than 2 (where iteration starts below), and 
+                // valid opening ('<') & closing ('>') chars at beginning and end of string
                 return false;
             }
 
-            Stack<string> openingTags = new Stack<string>();
-            bool isOpeningTag = false;
-            bool isClosingTag = false;
-            string tag = "";
-            int parenthesisCount = 0;
+            Stack<string> openingTags = new Stack<string>();  // used to push/pop tags to compare validity
+            bool isOpeningTag = false;  // defines state. if true, tag will be appended to openingTags when '>' is reached.
+            bool isClosingTag = false;  // defines state. if true, tag will be compared to popped value of openingTags.
+            string tag = "";  // built from chars when isOpeningTag or isClosingTag is true.
+            int parenthesisCount = 0;  // defines state. useful for defining validity of characters within parenthesis/quotes.
+            int pairsMatched = 0;  // number of pairs of tags matched. used to determine if multiple roots exist.
 
             for (int i = 1; i < xml.Length; i++)
             {
@@ -159,8 +163,7 @@ namespace SimpleXMLValidatorLibrary
                 }
 
             }
-
-            return true;
+            return openingTags.Count == 0;  // stack is empty if all tags have been popped
         }
     }
 }
