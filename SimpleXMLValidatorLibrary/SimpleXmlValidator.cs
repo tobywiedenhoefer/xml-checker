@@ -3,6 +3,18 @@ namespace SimpleXMLValidatorLibrary
     //feel free to add other classes/methods if you want
     public class SimpleXmlValidator
     {
+        private enum Cases
+        {
+            Skip = -1,
+            CurrCharIsParenthesisChar = 0,
+            CurrCharIsInQuotes = 1,
+            IsOpeningTagStart = 2,
+            IsOpeningTagEnd = 3,
+            IsClosingTagStart = 4,
+            IsClosingTagEnd = 5,
+            TryAppendingCharToTag = 6,
+        }
+
 
         //Please implement this method
         public static bool DetermineXml(string xml)
