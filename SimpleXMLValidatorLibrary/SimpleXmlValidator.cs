@@ -15,6 +15,54 @@ namespace SimpleXMLValidatorLibrary
             TryAppendingCharToTag = 6,
         }
 
+        private static Cases DetermineCase(char curr, char prev, bool isInParenthesis, bool isOpeningTag, bool isClosingTag)
+        {
+            // Determine the case of which the curr and prev characters will be evaluated in the DetermineXML class.
+
+            // Parenthesis/Quotes
+            if (curr == '"')
+            {
+                return Cases.CurrCharIsParenthesisChar;
+            }
+            if (isInParenthesis)
+            {
+                return Cases.CurrCharIsInQuotes;
+            }
+
+            // Start of tag (Opening or Closing)
+            if (prev == '<')
+            {
+                if (curr == '/')
+                {
+                    return Cases.IsClosingTagStart;
+                }
+                else
+                {
+                    return Cases.IsOpeningTagStart;
+                }
+            }
+
+            // End of tag (Opening or Closing)
+            if (curr == '>')
+            {
+                if (isOpeningTag)
+                {
+                    return Cases.IsOpeningTagEnd;
+                }
+                else if (isClosingTag)
+                {
+                    return Cases.IsClosingTagEnd;
+                }
+            }
+
+            // Tells logic to try appending valid chars to tag
+            if (isOpeningTag || isClosingTag)
+            {
+                return Cases.TryAppendingCharToTag;
+            }
+
+            return Cases.Skip;  // These are characters between '>' and '<'. ex: <root>these chars</root>
+        }
 
         //Please implement this method
         public static bool DetermineXml(string xml)
