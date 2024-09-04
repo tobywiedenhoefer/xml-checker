@@ -14,6 +14,12 @@ class Program
             ("<Design><Code>hello world</Code></Design><People>", false),//no closing tag for "People" 
             ("<People><Design><Code>hello world</People></Code></Design>", false),// "/Code" should come before "/People" 
             ("<People age=”1”>hello world</People>", false),//there is no closing tag for "People age=”1”" and no opening tag for "/People"
+            ("<People age=”1”></People age=”1”>", true),  // normal case with root without children
+            ("<People age=”1”></People age=”1”><People age=”2”></People age=”2”>", false),  // multiple roots
+            ("<root><People age=”1”></People age=”1”><People age=”2”></People age=”2”></root>", true),  // valid case for multiple People elements
+            ("<root><People age=”1”></People age=”1”><People age=”2”><People age=”2”><root>", false),  // the second People age="2" is missing '/'
+            ("</root></People age=”1”></People age=”1”><People age=”2”><People age=”2”><root>", false),  // added multiple closed tags before opening tags
+            ("<></>", false),  // element's tags are of 0 length.
         };
         int failedCount = 0;
         foreach ((string input, bool expected) in testCases)
